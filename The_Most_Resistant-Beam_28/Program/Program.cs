@@ -4,104 +4,114 @@ public class Exercise28
 {
     public static void Main(string[] args)
     {
-        string answer;
-        string[] options = new[] { "s", "n" };
+        Console.Write("Enter the beam: ");
+        string beam = Console.ReadLine();
 
-        do
+        if (IsValid(beam))
         {
-            Console.Write("Ingrese la viga: ");
-            string beam = Console.ReadLine() ?? "";
-
-            if (IsValid(beam))
+            if (SupportsWeight(beam))
             {
-                if (SupportsWeight(beam))
-                    Console.WriteLine("La viga soporta el peso!");
-                else
-                    Console.WriteLine("La viga NO soporta el peso!");
+                Console.WriteLine("The beam supports the weight!");
             }
             else
             {
-                Console.WriteLine("La viga está mal construida!");
+                Console.WriteLine("The beam does not support the weight!");
             }
-            do
-            {
-                Console.Write("¿Desea continuar [S]í, [N]o?: ");
-                answer = (Console.ReadLine() ?? "").Trim().ToLower();
-
-                if (!Array.Exists(options, x => x.Equals(answer, StringComparison.CurrentCultureIgnoreCase)))
-                {
-                    Console.WriteLine("Entrada no válida. Por favor ingrese 's' o 'n'.");
-                }
-
-            } while (!Array.Exists(options, x => x.Equals(answer, StringComparison.CurrentCultureIgnoreCase)));
-
-        } while (answer.Equals("s", StringComparison.CurrentCultureIgnoreCase));
-
-        Console.WriteLine("Game Over");
+        }
+        else
+        {
+            Console.WriteLine("The beam is poorly constructed");
+        }
     }
+
     public static bool IsValid(string beam)
     {
-        if (string.IsNullOrEmpty(beam))
-            return false;
+        if (string.IsNullOrEmpty(beam)) return false;
 
         char baseChar = beam[0];
-        if (baseChar != '%' && baseChar != '#' && baseChar != '&')
-            return false;
-
-        if (beam.Length == 1)
-            return true;
-
-        bool prevAsterisk = false;
-        for (int i = 1; i < beam.Length; i++)
+        if (!(baseChar == '#' || baseChar == '%' || baseChar == '&'))
         {
-            char c = beam[i];
-            if (c != '=' && c != '*')
-                return false;
+            return false;
+        }
 
-            if (c == '*')
+        int n = beam.Length;
+        int consecutiveStars = 0;
+
+        for (int i = 1; i < n; i++)
+        {
+            char piece = beam[i];
+
+            if (!(piece == '=' || piece == '*'))
             {
-                if (prevAsterisk) return false;
-                prevAsterisk = true;
+                return false;
+            }
+
+            if (piece == '*')
+            {
+                consecutiveStars++;
             }
             else
             {
-                prevAsterisk = false;
+                consecutiveStars = 0;
             }
+
+            if (consecutiveStars == 2)
+            {
+                return false;
+            }
+        }
+
+        if (consecutiveStars == n)
+        {
+            return false;
         }
 
         return true;
     }
+
     public static bool SupportsWeight(string beam)
     {
-        int baseCapacity = beam[0] switch
-        {
-            '%' => 10,
-            '#' => 30,
-            '&' => 35,
-            _ => 0
-        };
+        if (string.IsNullOrEmpty(beam)) return false;
 
-        if (beam.Length == 1)
-            return true;
+        char baseChar = beam[0];
 
+        int n = beam.Length;
         int totalWeight = 0;
-        int segment = 0;
+        int segmentWeight = 0;
 
-        for (int i = 1; i < beam.Length; i++)
+        for (int i = 1; i < n; i++)
         {
-            char c = beam[i];
-            if (c == '=')
+            char piece = beam[i];
+
+            if (piece == '=')
             {
-                segment++;
+                segmentWeight++;
             }
             else
             {
-                totalWeight += segment;
-                segment = 0;
+                totalWeight += segmentWeight * 3;
+                segmentWeight = 0;
             }
         }
-        totalWeight += segment;
 
-        return baseCapacity >= totalWeight;
+        totalWeight += segmentWeight;
+
+        int baseWeight = 0;
+        switch (baseChar)
+        {
+            case '%':
+                baseWeight = 10;
+                break;
+
+            case '&':
+                baseWeight = 30;
+                break;
+
+            case '#':
+                baseWeight = 90;
+                break;
+        }
+
+        return baseWeight >= totalWeight;
     }
 }
