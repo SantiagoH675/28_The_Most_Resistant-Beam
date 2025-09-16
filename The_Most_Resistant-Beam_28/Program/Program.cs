@@ -20,7 +20,7 @@ public class Exercise28
         }
         else
         {
-            Console.WriteLine("La viga está mal construida");
+            Console.WriteLine("La viga está mal construida.");
         }
     }
 
