@@ -4,23 +4,23 @@ public class Exercise28
 {
     public static void Main(string[] args)
     {
-        Console.Write("Enter the beam: ");
+        Console.Write("Ingrese la viga: ");
         string beam = Console.ReadLine();
 
         if (IsValid(beam))
         {
             if (SupportsWeight(beam))
             {
-                Console.WriteLine("The beam supports the weight!");
+                Console.WriteLine("La viga soporta el peso!");
             }
             else
             {
-                Console.WriteLine("The beam does not support the weight!");
+                Console.WriteLine("La viga no soporta el peso!");
             }
         }
         else
         {
-            Console.WriteLine("The beam is poorly constructed");
+            Console.WriteLine("La viga está mal construida");
         }
     }
 
